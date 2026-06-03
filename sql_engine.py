@@ -60,11 +60,25 @@ def is_safe(sql: str) -> bool:
 # Execute SQL
 # -----------------------
 def run_sql(sql: str):
-    with engine.connect() as conn:
-        result = conn.execute(text(sql))
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text(sql))
 
-        if sql.strip().lower().startswith("select"):
-            return result.fetchall()
+            if sql.strip().lower().startswith("select"):
+                return {
+                    "success": True,
+                    "data": result.fetchall()
+                }
 
-        conn.commit()
-        return "Query executed successfully"
+            conn.commit()
+
+            return {
+                "success": True,
+                "data": "Query executed successfully"
+            }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }

@@ -33,10 +33,15 @@ if st.button("Execute Query"):
 
             st.subheader("Result")
 
-            if isinstance(result, list):
-                st.dataframe(result)
+            if result["success"]:
+                if isinstance(result["data"], list):
+                    st.dataframe(result["data"])
+                else:
+                    st.success(result["data"])
             else:
-                st.success(result)
+                st.error("Unable to execute the generated SQL query,please give statement in a proper way.")
+                st.code(sql)
+                st.warning(result["error"])
 
         else:
             st.error("Unsafe SQL detected!")
